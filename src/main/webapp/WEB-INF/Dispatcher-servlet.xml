@@ -1,0 +1,53 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+   	
+   	<context:component-scan base-package="com.cuentas.controllers" />
+   	
+   
+   	<bean id="viewResolver" 
+   		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+   		<property name="prefix"><value>/WEB-INF/views/</value></property>
+   		<property name="suffix"><value>.jsp</value></property>
+   </bean>
+   
+   
+   <!-- NECESARIO: camibiar la URL de la base de datos por la que va a usar
+   		cambiar el nombre de usuario y password de la base de datos de acuerdo 
+   		a su configuración
+    -->
+   <bean id="dataSourceJndi"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	    <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+	    <property name="url" value="jdbc:mysql://localhost:3306/cuentas"/>
+	    <property name="username" value="root"/>
+	    <property name="password" value="toor"/>
+	</bean>
+   
+   <bean id="dataSourceImpl" class="com.cuentas.dao.DataSourceImpl">
+   		<property name="dataSource" ref="dataSourceJndi"></property>
+   </bean>
+   
+   <bean id="cuentaDAO" class="com.cuentas.dao.CuentaDAOImpl">
+   		<property name="dataSource" ref="dataSourceImpl"></property>
+   </bean>
+   
+ 	<bean id="loginController" class="com.cuentas.controllers.LoginController">
+ 		<property name="dao" ref="cuentaDAO"></property>
+ 	</bean>
+ 	
+ 	<bean id="cuentaController" class="com.cuentas.controllers.CuentaController">
+		<property name="dao" ref="cuentaDAO"></property>
+ 	</bean>
+ 	
+ 	<bean id="excelController" class="com.cuentas.controllers.ExcelController">
+ 		<property name="dao" ref="cuentaDAO"></property>
+ 	</bean>
+   
+   	
+</beans>
